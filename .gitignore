@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv*/
+.venv/
+env/
+ENV/
+
+# Flask/instance/session
+instance/
+flask_session/
+
+# User uploads and generated data
+uploads/
+Plots/
+Data_files/raw_data/
+*.log
+
+# Node/npm
+node_modules/
+
+# System/IDE
+.vscode/
+.DS_Store
+
+# Environment variables
+.env

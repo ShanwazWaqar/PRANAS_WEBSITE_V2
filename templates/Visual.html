@@ -6,7 +6,7 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mpld3/0.5.5/mpld3.min.js"></script>
-    <title>Beautiful Page</title>
+    <title>PRANAS Data Visualization</title>
     <style>
         * {
             margin: 0;
@@ -159,8 +159,8 @@
             height: 50px; /* Fixed height */
             font-size: 17px;
             opacity: 0.9;
-  }
-  .output1{
+        }
+        .output1{
             display: flex;
             justify-content: space-between;
 
@@ -171,9 +171,118 @@
         .sub_box2{
             margin-bottom:  30px;
             align-items: center;       
-         }
+        }
         
+        /* Flash message styles */
+        .flash-messages {
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+        }
         
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .flash-success {
+            background-color: rgba(0, 128, 0, 0.3);
+            border: 1px solid #00FF00;
+        }
+        
+        .flash-error {
+            background-color: rgba(255, 0, 0, 0.3);
+            border: 1px solid #FF0000;
+        }
+        
+        /* Recent Files Section */
+        .user-files-section {
+            width: 90%;
+            background-color: #333333;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px auto;
+            opacity: 0.9;
+        }
+        
+        .user-files-title {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #45f3ff;
+        }
+        
+        .user-files-list {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .file-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .file-name {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .file-date {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .file-link {
+            background-color: rgba(69, 243, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .file-link:hover {
+            background-color: rgba(69, 243, 255, 0.4);
+        }
+        
+        /* Loading indicator */
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(69, 243, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #45f3ff;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -181,7 +290,7 @@
     <header>
         <div class="head1">
             <div class="head2">
-                <a href="{{ url_for('Home') }}">
+                <a href="{{ url_for('index') }}">
                     <img src="{{ url_for('static', filename='image1.jpeg') }}" alt="Logo" class="logo">
                 </a>
             </div>
@@ -197,9 +306,48 @@
     </video>
     <div class="welcome_box_container">
         <div class="welcome-box">
-            <h1 class="welcome-box-text"><center>Welcome to Bacteria Analyser</center></h1>
+            <h1 class="welcome-box-text"><center>Welcome to Data Visualization</center></h1>
         </div>
     </div>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category if category != 'message' else 'info' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Recent Files Section (if any) -->
+    {% if user_files and user_files|length > 0 %}
+    <div class="user-files-section">
+        <h3 class="user-files-title">Your Recent Visualizations</h3>
+        <div class="user-files-list">
+            {% for file in user_files %}
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-name">{{ file.original_filename }}</span>
+                    <span class="file-date">{{ file.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+                <div class="file-actions">
+                    <a href="{{ url_for('view_file', file_id=file.id) }}" class="file-link">View Details</a>
+                    {% if file.raw_plot_path %}
+                    <a href="{{ url_for('serve_plot', filename=file.raw_plot_path) }}" target="_blank" class="file-link">View Plot</a>
+                    {% elif file.cluster_plot_path %}
+                    <a href="{{ url_for('serve_plot', filename=file.cluster_plot_path) }}" target="_blank" class="file-link">View Plot</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
     <div class="content">
         <div class="box1">
             <div class="box_1_heading_container">
@@ -220,8 +368,13 @@
                             <label for="csv_file">CSV File:</label><br>
                             <input type="file" id="csv_file" name="csv_file" accept=".csv"><br><br>
                             <div class="label_location">
-                                <div class="f-submit"><button id="sub" type="submit ">SUBMIT</button></div>
-                                
+                                <div class="f-submit">
+                                    <button id="sub" type="submit">SUBMIT</button>
+                                </div>
+                                <div id="loading" class="loading-indicator">
+                                    <div class="spinner"></div>
+                                    <p>Processing...</p>
+                                </div>
                             </div>
                             <br><br><br><br>
                         </div>
@@ -237,7 +390,7 @@
         </div>
         <div class=" box2" >
             <div class="output1">
-                <form  action="{{ url_for('datavisualization')}}" method="post">
+                <form action="{{ url_for('datavisualization')}}" method="post">
                     <div class="sub_box2">
                         <h2><center>PROCESSOR OUTPUT</center></h2>
                     </div>
@@ -255,7 +408,7 @@
                                 <div class="radio-group">
                                     <label class="radio-label">
                                         {% for string in item2 %}
-                                        <input type="radio" name="conc_typeX"value="{{ string }}"> {{ string }}<br>
+                                        <input type="radio" name="conc_typeX" value="{{ string }}"> {{ string }}<br>
                                         {% endfor %}
                                     </label> 
                                 </div>
@@ -266,7 +419,7 @@
                                     <div class="radio-group">
                                         <label class="radio-label">
                                             {% for string in item3 %}
-                                            <input type="radio" name="vol_typeX"value="{{ string }}"> {{ string }}<br>
+                                            <input type="radio" name="vol_typeX" value="{{ string }}"> {{ string }}<br>
                                             {% endfor %}
                                         </label> 
                                     </div>
@@ -277,7 +430,7 @@
                                     <div class="radio-group">
                                         <label class="radio-label">
                                             {% for string in item4 %}
-                                            <input type="radio" name="slide_typeX"value="{{ string }}"> {{ string }}<br>
+                                            <input type="radio" name="slide_typeX" value="{{ string }}"> {{ string }}<br>
                                             {% endfor %}
                                         </label> 
                                     </div>
@@ -297,6 +450,10 @@
                     </div>
                     <div class="sub_box2">
                         {% if item %}
+                            <!-- Store the file ID from session to ensure we process the same file -->
+                            {% if session.file_id %}
+                            <input type="hidden" name="file_id" value="{{ session.file_id }}">
+                            {% endif %}
                             <input type="text" name="selected_option" value="visual" id="visual" style="display: none;">
                             <input type="text" name="visit" value="two" id="visit" style="display: none;">
                             <div class="radio-group">
@@ -311,23 +468,38 @@
                         <div class="Op_button">
                             {% if item %}
                             <div class="Op_button">
-                                <center><button type="submit">Submit</button></center>
+                                <center><button type="submit" id="processingBtn">Submit</button></center>
                             </div>
                             {% endif %}
                         </div>
                     </div>
-            </form>
+                </form>
                 
             
-             <div class="output_placeholder_container">
-                    <h1 class="output_placeholder"><center>{{sample_placeholder}}</center></h1>
-                    {% if img_base64 %}
-                        <div class="returned_image">
-                            <img src="data:image/png;base64,{{ img_base64 }}" alt="PLOT" style="width: 400px; height: 250px;">
+            <div class="output_placeholder_container">
+                {% if img_base64 %}
+                    <div class="returned_image">
+                        <img src="data:image/png;base64,{{ img_base64 }}" alt="PLOT" style="width: 400px; height: 250px;">
+                        
+                        {% if file_record %}
+                        <div class="file-details" style="margin-top: 15px; text-align: center;">
+                            <p>File: {{ file_record.original_filename }}</p>
+                            <p>Processed: {{ file_record.processed_at.strftime('%Y-%m-%d %H:%M') if file_record.processed_at else 'Not processed' }}</p>
+                            <div style="margin-top: 10px;">
+                                <a href="{{ url_for('download_file', file_id=file_record.id) }}" class="file-link">Download Original</a>
+                                {% if file_record.raw_plot_path %}
+                                <a href="{{ url_for('serve_plot', filename=file_record.raw_plot_path) }}" target="_blank" class="file-link">View Full Plot</a>
+                                {% elif file_record.cluster_plot_path %}
+                                <a href="{{ url_for('serve_plot', filename=file_record.cluster_plot_path) }}" target="_blank" class="file-link">View Full Plot</a>
+                                {% endif %}
+                            </div>
                         </div>
-                    {% endif %}
-                    
-             </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <h1 class="output_placeholder"><center>{{sample_placeholder}}</center></h1>
+                {% endif %}
+            </div>
             </div>
         </div>
     </div>
@@ -336,12 +508,33 @@
         <p>© DICE lab, College of Engineering, University of Georgia, Athens, GA, 30602.</p>
     </footer>
     <script>
-        document.getElementById("myForm").addEventListener("submit", function() {
-        // Clear data after form submission
-        document.getElementById("sub").disabled = true; // Disable the submit button
-        // Optionally, you can clear other form fields or hide elements
-    });
+        document.getElementById("myForm").addEventListener("submit", function(e) {
+            // Show loading indicator
+            document.getElementById("loading").style.display = "block";
+            // Disable the submit button
+            document.getElementById("sub").disabled = true;
+        });
 
+        // Also handle the second form submission
+        var processingBtn = document.getElementById("processingBtn");
+        if (processingBtn) {
+            processingBtn.addEventListener("click", function() {
+                processingBtn.innerHTML = "Processing...";
+                processingBtn.disabled = true;
+            });
+        }
+
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(function() {
+            var flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.5s';
+                setTimeout(function() {
+                    message.style.display = 'none';
+                }, 500);
+            });
+        }, 5000);
 
         function showInputBox() {
             var inputBox = document.getElementById("inputBox");
@@ -352,17 +545,39 @@
                 }
             }
         }
+        
         function validateForm() {
-            var radioInputs = document.querySelectorAll(".radio-input");
-
+            var radioInputs = document.querySelectorAll('input[name="data_type"]');
+            var fileInput = document.getElementById('csv_file');
+            var isRadioSelected = false;
+            
+            // Check if a radio button is selected
             for (var i = 0; i < radioInputs.length; i++) {
                 if (radioInputs[i].checked) {
-                    // If "Clustering" is selected, ensure a sub-radio button is also selected
-                    
-                   
-                    return true; // Submit the form
+                    isRadioSelected = true;
+                    break;
                 }
             }
+            
+            if (!isRadioSelected) {
+                alert("Please select a data type (Raw Data or Clustered Data)");
+                return false;
+            }
+            
+            // Check if a file was selected
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert("Please select a CSV file to upload");
+                return false;
+            }
+            
+            // Check if file is a CSV
+            var fileName = fileInput.files[0].name;
+            if (!fileName.toLowerCase().endsWith('.csv')) {
+                alert("Please select a CSV file only");
+                return false;
+            }
+            
+            return true;
         }
     </script>
 </body>

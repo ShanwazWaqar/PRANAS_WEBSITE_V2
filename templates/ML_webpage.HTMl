@@ -3,283 +3,900 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beautiful Page</title>
+    <title>PRANAS DATA ANALYSER - Machine Learning Training</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
+        :root {
+            --uga-red: #BA0C2F;
+            --uga-black: #000000;
+            --uga-silver: #B7B7B7;
+            --uga-light-gray: #F5F5F5;
+            --uga-dark-gray: #333333;
+            --accent-color: #005BBB; /* Complementary blue accent */
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            color: #45f3ff;
         }
+        
         body, html {
-            padding:0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            
-            min-height: 100vh;
-            flex-direction: column;
-            margin: 0;
+            height: 100%;
+            background-color: var(--uga-light-gray);
+            color: var(--uga-dark-gray);
+            overflow-x: hidden;
         }
 
+        /* Header Styles */
         header {
-            background-color: #333;
-            padding: 30px;
-            text-align: center;
-            position: absolute;
-            top: 0;
-            width: 100%;
+            background: linear-gradient(135deg, var(--uga-red) 0%, #8B0C24 100%);
+            padding: 15px 0;
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
         }
 
         .logo {
-            width: 100px; /* Adjust the width of the logo as needed */
+            width: 50px;
             height: auto;
-            vertical-align: middle;
-            margin-right: 10px; /* Adjust the margin between the logo and text as needed */
+            margin-right: 15px;
+            border-radius: 5px;
         }
-        .head1{
+        
+        header h1 {
+            color: white;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+        }
+        
+        .header-nav {
             display: flex;
-            justify-content: center;
-            /*justify-content: space-between;*/
+            gap: 20px;
         }
-        .head2{
-            margin-right: 20px; /* Adjust the space between images as needed */
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
         }
-        footer {
-            background-color: #333;
-            padding: 30px;
-            text-align: center;
-            position: absolute;
-            bottom:0;
-            width: 100%;
-            
+        
+        .nav-link:hover {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.1);
         }
-        video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: -1; /* Place the video behind other elements */
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-        }
-        .welcome_box_container{
-            margin-top: 40px;
-            display: flex;
-            justify-content: center;
-            
-        }
-        .welcome-box{
-            display: inline-block;
-            align-items: center;
-            align-content: center;
-            border-radius: 10px;
-            background-color: #333333;
-            margin: 1px ;
-            padding: 20px;
 
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+            color: white;
         }
-        .content{
+
+        .user-greeting {
+            font-size: 0.9rem;
+            margin-right: 15px;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-action-link {
+            color: white;
+            font-size: 0.8rem;
+            text-decoration: none;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .user-action-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Flash Messages */
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .flash-message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* Main Content Styles */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: calc(100vh - 130px); /* viewport height minus header and footer */
+        }
+        
+        /* Page Header */
+        .page-header {
+            margin-bottom: 40px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
-        .box1{
-            z-index: 2;
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--uga-red);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background-color: var(--uga-red);
+        }
+        
+        .breadcrumb {
+            color: var(--uga-dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--uga-red);
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            height: 100%;
+            position: relative;
+        }
+        
+        /* Input Panel */
+        .input-panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            animation: slideInLeft 0.6s ease-out forwards;
+        }
+        
+        .panel-header {
+            background: var(--uga-red);
+            color: white;
             padding: 20px;
-            width: 30%;
-            background-color: #333333;
-            border-radius: 20px;
-            margin:20px;
-            height: 400px;
-            opacity: 0.5;
-            
+            position: relative;
         }
-        .box2{
-            margin-left: auto;
-            z-index: 2;
+        
+        .panel-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .panel-body {
+            padding: 25px;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .radio-group {
+            margin-bottom: 20px;
+        }
+        
+        .radio-label {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: var(--uga-dark-gray);
+            cursor: pointer;
+        }
+        
+        input[type="radio"] {
+            margin-right: 10px;
+            accent-color: var(--uga-red);
+        }
+        
+        input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: var(--uga-red);
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: var(--uga-light-gray);
+            font-size: 0.9rem;
+        }
+        
+        .sub-radio-group {
+            margin-left: 25px;
+            padding: 15px;
+            background-color: var(--uga-light-gray);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--uga-red);
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        .input-box {
+            margin-top: 15px;
             padding: 20px;
-            width: 50%;
-            background-color: #333333;
-            border-radius: 20px;
-            margin:20px;
-            height: 400px;
-            opacity: 0.9;
-        }
-        .box_1_heading_container{
-            text-align: center;
-        }
-        .box_1_heading{
-            display: inline-block;
-        }
-        .radio-group{
-            padding: 10px;
-        }
-        input{
-            padding:10px;
-        }
-        .input-box{
+            background-color: var(--uga-light-gray);
+            border-radius: 8px;
+            border: 1px solid #eee;
             display: none;
+            animation: fadeIn 0.3s ease-out forwards;
         }
-        .form-items{
+        
+        /* Output Panel */
+        .output-panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
             display: flex;
-            justify-content: center;
-            margin-top: 20px;
+            flex-direction: column;
+            animation: slideInRight 0.6s ease-out forwards;
+            position: relative;
         }
-        .output_placeholder_container{
-            height: 300px;
+        
+        .output-panel-header {
+            background: var(--uga-dark-gray);
+            color: white;
+            padding: 20px;
+        }
+        
+        .output-panel-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .output-panel-body {
+            padding: 25px;
+            flex-grow: 1;
+        }
+        
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .options-list {
+            margin-bottom: 20px;
+        }
+        
+        .option-item {
+            margin: 10px 0;
+            color: var(--uga-dark-gray);
+        }
+        
+        /* Output Display */
+        .output-display {
+            min-height: 250px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
+            background-color: var(--uga-light-gray);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            border: 1px dashed var(--uga-silver);
         }
-        .Op_button button[type="submit"] {
-            background-color:aquamarine;
-
-            border: none; 
-            color:black; 
-            padding: 16px 32px; 
-            text-decoration: none; 
-            margin: 10px 0; /* Margin between buttons */
-            cursor: pointer; 
-            border-radius: 5px; 
-            transition-duration: 0.4s; 
-            width: 350px; /* Fixed width */
-            height: 50px; /* Fixed height */
-            font-size: 17px;
-            opacity: 0.9;
-        } 
         
+        .output-placeholder {
+            font-size: 1.2rem;
+            color: #888;
+            margin-bottom: 20px;
+        }
         
+        .returned-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Button Styles */
+        .action-button, button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 14px 0;
+            margin: 15px 0;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--uga-red);
+            color: white;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .action-button:hover, button[type="submit"]:hover {
+            background-color: #8B0C24;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(186, 12, 47, 0.3);
+        }
+        
+        .action-button:active, button[type="submit"]:active {
+            transform: translateY(-1px);
+        }
+        
+        .secondary-button {
+            background-color: var(--accent-color);
+        }
+        
+        .secondary-button:hover {
+            background-color: #004A99;
+        }
+        
+        /* Canvas for Background Animation */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: var(--uga-dark-gray);
+            padding: 15px 0;
+            color: white;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+        
+        /* Animations */
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 20px 15px;
+            }
+            
+            .page-title {
+                font-size: 1.6rem;
+            }
+            
+            .nav-link {
+                padding: 3px 6px;
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
-
+    <div id="canvas-container"></div>
+    
     <header>
-        <div class="head1">
-            <div class="head2">
-                <a href="{{ url_for('Home') }}">
-                    <img src="{{ url_for('static', filename='image1.jpeg') }}" alt="Logo" class="logo">
-                </a>
-            </div>
-            <div class="head2">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='image1.jpeg') }}" alt="PRANAS Logo" class="logo">
                 <h1>PRANAS DATA ANALYSER</h1>
             </div>
-            
+            <div class="header-nav">
+                <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="#" class="nav-link">Documentation</a>
+                <a href="#" class="nav-link">Contact</a>
+                
+                <!-- User authentication information -->
+                {% if current_user.is_authenticated %}
+                <div class="user-info">
+                    <span class="user-greeting">Welcome, {{ current_user.username }}</span>
+                    <div class="user-actions">
+                        <a href="{{ url_for('dashboard') }}" class="user-action-link">Dashboard</a>
+                        <a href="{{ url_for('auth.logout') }}" class="user-action-link">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="nav-link">Register</a>
+                {% endif %}
+            </div>
         </div>
     </header>
-    <video autoplay muted loop>
-        <source src="{{ url_for('static', filename='web1.mp4') }}" type="video/mp4">
-            Your browser does not support the video tag.
-    </video>
-    <div class="welcome_box_container">
-        <div class="welcome-box">
-            <h1 class="welcome-box-text"><center>Welcome to Bacteria Analyser</center></h1>
-        </div>
-    </div>
-    <div class="content">
-        <div class="box1">
-            <div class="box_1_heading_container">
-                <h2 class="box_1_heading">INPUT PROCESSOR</h2>
+    
+    <div class="main-container">
+        <div class="page-header">
+            <h2 class="page-title">Machine Learning Training</h2>
+            <div class="breadcrumb">
+                <a href="{{ url_for('index') }}">Home</a> > 
+                <a href="{{ url_for('dashboard') }}">Dashboard</a> > 
+                <a href="{{ url_for('redirect_to_page2') }}">Bacteria Analysis</a> > ML Training
             </div>
-            <div class="form-items">
-                <div class="wrapper">
+        </div>
+        
+        <!-- Flash messages section -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="content-grid">
+            <div class="input-panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">INPUT PROCESSOR</h3>
+                </div>
+                
+                <div class="panel-body">
                     <form action="{{ url_for('dataML')}}" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
                         <div class="radio-group">
                             <label class="radio-label">
-                            <input type="radio" name="radioOption" value="ML_train" class="radio-input" onchange="showInputBox(); showInputBox3();"> ML Train
-                            </label><br>
+                                <input type="radio" name="radioOption" value="ML_train" class="radio-input" onchange="showInputBox(); showInputBox3();" checked>
+                                ML Training
+                            </label>
+                            
                             <label class="radio-label">
-                                <input type="radio" name="radioOption" value="ML_test" class="radio-input" onchange="showInputBox(); showInputBox3();"> ML test
-                            </label> 
+                                <input type="radio" name="radioOption" value="ML_test" class="radio-input" onchange="showInputBox(); showInputBox3();">
+                                ML Testing
+                            </label>
                         </div>
-                        <div class="sub-radio-group" id="Train_ML" style="display: none;">
+                        
+                        <div class="sub-radio-group" id="Train_ML" style="display: block;">
                             <label class="radio-label">
-                                <input type="radio" name="Train_ML" value="GP" class="radio-input"> Gram Positive
+                                <input type="radio" name="Train_ML" value="GP" class="radio-input" checked>
+                                Gram Positive
                             </label>
-                            <br>
+                            
                             <label class="radio-label">
-                                <input type="radio" name="Train_ML" value="GN" class="radio-input"> Gram Negative
+                                <input type="radio" name="Train_ML" value="GN" class="radio-input">
+                                Gram Negative
                             </label>
-                            <br>
+                            
                             <label class="radio-label">
-                                <input type="radio" name="Train_ML" value="COM" class="radio-input"> Combination
+                                <input type="radio" name="Train_ML" value="COM" class="radio-input">
+                                Combination
                             </label>
-                            <br>
+                            
                             <label class="radio-label">
-                                <input type="radio" name="Train_ML" value="All" class="radio-input"> All Data
+                                <input type="radio" name="Train_ML" value="All" class="radio-input">
+                                All Data
                             </label>
-                            <input type="text" name="visit" value="one" id="visit" style="display: none;">
-                            <!-- Add more options as needed -->
                         </div>
-                    
-                        <div class="input-box" id="inputBox">
-                            <label for="csv_file">CSV File:</label><br>
-                            <input type="file" id="csv_file" name="csv_file" accept=".csv"><br><br>
-                            <div class="label_location">
-                                <div class="f-submit"><button id="sub" type="submit ">SUBMIT</button></div>
-                                
-                            </div>
-                            <br><br><br><br>
+                        
+                        <input type="text" name="visit" value="one" id="visit" style="display: none;">
+                        
+                        <div class="input-box" id="inputBox" style="display: block;">
+                            <label for="csv_file">Select CSV File:</label>
+                            <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+                            <p class="file-info" style="font-size: 0.8rem; color: #666; margin-top: 5px;">
+                                Your file will be saved to your account and can be accessed later from your dashboard.
+                            </p>
+                            
+                            <button id="sub" type="submit">PROCESS DATA</button>
                         </div>
                     </form>
-                    <div class="Op_button">
-                        <form action="{{ url_for('redirect_to_page2') }}" method="get">
-                            <button type="submit"> Please click here to visit home Page</button>
-                        </form>
-                    </div> 
-                </div>       
-            </div>
-        </div>
-
-        <div class=" box2" >
-            <form id="checkboxForm" action="{{url_for('dataML')}}" method="post">
-                <div class="sub_box2">
-                    <h2><center>PROCESSOR OUTPUT</center></h2>
-                </div>
-                <div class="sub_box2">
-                        <div class="output1">
-                            <div class="items">
-                                {% if item %}
-                                {% for string in item %}
-                                    <input type="checkbox" name="options" value="{{ string }}"> {{ string }}<br>
-                                {% endfor %}
-                            </div>
-                                            <input type="text" name="visit" value="two" id="visit" style="display: none;">
-                                            <input type="text" name="radioOption" value="ML_train" id="radioOption" style="display: none;">
-                            {% endif %}
-                        </div>
                     
+                    <form action="{{ url_for('dashboard') }}" method="get">
+                        <button type="submit" class="action-button secondary-button">Return to Dashboard</button>
+                    </form>
                 </div>
-
-                <div class="sub_box2">
-                    <div class="Op_button">
+            </div>
+            
+            <div class="output-panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">PROCESSOR OUTPUT</h3>
+                </div>
+                
+                <div class="panel-body">
+                    <form id="checkboxForm" action="{{ url_for('dataML') }}" method="post">
                         {% if item %}
-                                <center><button type="submit">Submit</button></center>
+                        <div class="options-list">
+                            {% for string in item %}
+                            <div class="option-item">
+                                <input type="checkbox" name="options" id="option-{{ loop.index }}" value="{{ string }}">
+                                <label for="option-{{ loop.index }}">{{ string }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <input type="text" name="visit" value="two" id="visit" style="display: none;">
+                        <input type="text" name="radioOption" value="ML_train" id="radioOption" style="display: none;">
+                        <input type="hidden" name="file_id" value="{{ session.get('file_id', '') }}">
+                        
+                        <button type="submit" class="action-button">Run Analysis</button>
+                        {% endif %}
+                    </form>
+                    
+                    <div class="output-display">
+                        {% if img_base64 %}
+                            <img src="data:image/png;base64,{{ img_base64 }}" alt="ML Analysis Result" class="returned-image">
+                            <p style="margin-top: 20px; color: green;">Analysis complete! The results have been saved to your dashboard.</p>
+                            <div style="margin-top: 15px;">
+                                <a href="{{ url_for('dashboard') }}" class="action-button secondary-button" style="display: inline-block; width: auto; padding: 10px 20px;">View in Dashboard</a>
+                            </div>
+                        {% else %}
+                            <p class="output-placeholder">{{ sample_placeholder|default('Select training options and upload data to view results here.') }}</p>
+                            
+                            <svg width="120" height="120" viewBox="0 0 24 24" style="opacity: 0.2;">
+                                <path fill="#BA0C2F" d="M5,9.5L7.5,14H2.5L5,9.5M3,4H7V8H3V4M5,20A2,2 0 0,0 7,18A2,2 0 0,0 5,16A2,2 0 0,0 3,18A2,2 0 0,0 5,20M9,5V7H21V5H9M9,19H21V17H9V19M9,13H21V11H9V13Z"/>
+                            </svg>
                         {% endif %}
                     </div>
                 </div>
-            </form>
-            <div class="output_placeholder_container">
-                <h1 class="output_placeholder"><center>{{sample_placeholder}}</center></h1>
-                {% if img_base64 %}
-                    <div class="returned_image">
-                        <img src="data:image/png;base64,{{ img_base64 }}" alt="PLOT" style="width: 400px; height: 250px;">
-                    </div>
-                {% endif %}    
-         </div>
+            </div>
         </div>
     </div>
-
-
+    
     <footer>
         <p>© DICE lab, College of Engineering, University of Georgia, Athens, GA, 30602.</p>
     </footer>
+    
     <script>
+        // ThreeJS Animation - Neural Network Visualization
+        let scene, camera, renderer;
+        let neuralNetwork;
+
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 25;
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            
+            // Create neural network visualization
+            createNeuralNetworkVisualization();
+            
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Start animation loop
+            animate();
+        }
+        
+        function createNeuralNetworkVisualization() {
+            // Create a group to hold all visualization elements
+            neuralNetwork = new THREE.Group();
+            scene.add(neuralNetwork);
+            
+            // UGA colors
+            const ugaRed = new THREE.Color(0xBA0C2F);
+            const ugaSilver = new THREE.Color(0xB7B7B7);
+            const ugaBlue = new THREE.Color(0x005BBB);
+            
+            // Create neural network layers
+            const layers = [8, 12, 10, 6, 3]; // Number of nodes in each layer
+            const layerDistance = 8; // Distance between layers
+            
+            // Create nodes for each layer
+            const nodes = [];
+            
+            for (let l = 0; l < layers.length; l++) {
+                const layer = [];
+                const nodesInLayer = layers[l];
+                const xPos = (l - Math.floor(layers.length/2)) * layerDistance;
+                
+                for (let n = 0; n < nodesInLayer; n++) {
+                    // Calculate vertical position
+                    const totalHeight = (nodesInLayer - 1) * 2;
+                    const yPos = n * 2 - totalHeight / 2;
+                    
+                    // Create node
+                    const nodeGeometry = new THREE.SphereGeometry(0.4, 32, 32);
+                    
+                    // Color based on layer type
+                    let nodeMaterial;
+                    if (l === 0) {
+                        // Input layer - blue
+                        nodeMaterial = new THREE.MeshBasicMaterial({ color: ugaBlue });
+                    } else if (l === layers.length - 1) {
+                        // Output layer - red
+                        nodeMaterial = new THREE.MeshBasicMaterial({ color: ugaRed });
+                    } else {
+                        // Hidden layers - silver
+                        nodeMaterial = new THREE.MeshBasicMaterial({ color: ugaSilver });
+                    }
+                    
+                    const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+                    node.position.set(xPos, yPos, 0);
+                    
+                    // Add to the scene and store reference
+                    neuralNetwork.add(node);
+                    layer.push(node);
+                    
+                    // Store animation data
+                    node.userData = {
+                        pulsePhase: Math.random() * Math.PI * 2,
+                        pulseSpeed: 0.5 + Math.random() * 0.5
+                    };
+                }
+                
+                nodes.push(layer);
+            }
+            
+            // Create connections between layers
+            for (let l = 0; l < layers.length - 1; l++) {
+                const currentLayer = nodes[l];
+                const nextLayer = nodes[l + 1];
+                
+                // Connect each node in current layer to each node in next layer
+                for (let i = 0; i < currentLayer.length; i++) {
+                    for (let j = 0; j < nextLayer.length; j++) {
+                        // Only create a subset of connections to avoid clutter
+                        if (Math.random() > 0.7) continue;
+                        
+                        const startPos = currentLayer[i].position;
+                        const endPos = nextLayer[j].position;
+                        
+                        // Create connection geometry
+                        const points = [];
+                        points.push(new THREE.Vector3(startPos.x, startPos.y, startPos.z));
+                        points.push(new THREE.Vector3(endPos.x, endPos.y, endPos.z));
+                        
+                        const connectionGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                        
+                        // Determine connection color based on weight
+                        const connectionMaterial = new THREE.LineBasicMaterial({
+                            color: 0xCCCCCC,
+                            transparent: true,
+                            opacity: 0.2 + Math.random() * 0.3
+                        });
+                        
+                        const connection = new THREE.Line(connectionGeometry, connectionMaterial);
+                        
+                        // Add to scene
+                        neuralNetwork.add(connection);
+                        
+                        // Store animation data
+                        connection.userData = {
+                            startNode: currentLayer[i],
+                            endNode: nextLayer[j],
+                            activationPhase: Math.random() * Math.PI * 2,
+                            activationSpeed: 0.2 + Math.random() * 0.3
+                        };
+                    }
+                }
+            }
+            
+            // Add data flow particles
+            const particleCount = 40;
+            const particleGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+            
+            for (let i = 0; i < particleCount; i++) {
+                // Determine which layer connection this particle travels along
+                const layerIndex = Math.floor(Math.random() * (layers.length - 1));
+                const startLayerSize = layers[layerIndex];
+                const endLayerSize = layers[layerIndex + 1];
+                
+                const startNodeIndex = Math.floor(Math.random() * startLayerSize);
+                const endNodeIndex = Math.floor(Math.random() * endLayerSize);
+                
+                const startNode = nodes[layerIndex][startNodeIndex];
+                const endNode = nodes[layerIndex + 1][endNodeIndex];
+                
+                // Determine particle color based on layer
+                let color;
+                if (layerIndex === 0) {
+                    color = ugaBlue;
+                } else if (layerIndex === layers.length - 2) {
+                    color = ugaRed;
+                } else {
+                    color = ugaSilver;
+                }
+                
+                const particleMaterial = new THREE.MeshBasicMaterial({
+                    color: color,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                
+                // Set initial position at start node
+                particle.position.copy(startNode.position);
+                
+                // Store animation data
+                particle.userData = {
+                    startNode: startNode,
+                    endNode: endNode,
+                    progress: 0,
+                    speed: 0.005 + Math.random() * 0.01,
+                    active: Math.random() > 0.5 // Only some particles active at start
+                };
+                
+                if (!particle.userData.active) {
+                    particle.visible = false;
+                }
+                
+                neuralNetwork.add(particle);
+            }
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Animate neural network
+            if (neuralNetwork) {
+                const time = Date.now() * 0.001;
+                
+                // Find all nodes and animate them
+                neuralNetwork.children.forEach(child => {
+                    // Animate nodes (pulsing)
+                    if (child.geometry && child.geometry.type === 'SphereGeometry' && child.geometry.parameters.radius === 0.4) {
+                        const userData = child.userData;
+                        const pulse = Math.sin(time * userData.pulseSpeed + userData.pulsePhase) * 0.1 + 1;
+                        child.scale.set(pulse, pulse, pulse);
+                    }
+                    
+                    // Animate connections (activations)
+                    if (child.geometry && child.geometry.type === 'BufferGeometry' && child.type === 'Line') {
+                        const userData = child.userData;
+                        if (userData.startNode && userData.endNode) {
+                            const activation = Math.sin(time * userData.activationSpeed + userData.activationPhase) * 0.5 + 0.5;
+                            child.material.opacity = 0.2 + activation * 0.3;
+                        }
+                    }
+                    
+                    // Animate particles
+                    if (child.geometry && child.geometry.type === 'SphereGeometry' && child.geometry.parameters.radius === 0.15) {
+                        const userData = child.userData;
+                        
+                        // Only animate active particles
+                        if (userData.active) {
+                            // Move particle from start to end
+                            userData.progress += userData.speed;
+                            
+                            // Reset when reaching the end
+                            if (userData.progress >= 1) {
+                                userData.progress = 0;
+                                
+                                // 50% chance to deactivate this particle
+                                if (Math.random() > 0.5) {
+                                    userData.active = false;
+                                    child.visible = false;
+                                }
+                            }
+                            
+                            // Update position
+                            const startPos = userData.startNode.position;
+                            const endPos = userData.endNode.position;
+                            
+                            child.position.lerpVectors(startPos, endPos, userData.progress);
+                        } else {
+                            // Chance to activate inactive particles
+                            if (Math.random() > 0.995) {
+                                userData.active = true;
+                                userData.progress = 0;
+                                child.visible = true;
+                                child.position.copy(userData.startNode.position);
+                            }
+                        }
+                    }
+                });
+                
+                // Rotate the entire network gently
+                neuralNetwork.rotation.y = Math.sin(time * 0.2) * 0.2;
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // Form functions
         function showInputBox() {
             var inputBox = document.getElementById("inputBox");
             var radioInputs = document.querySelectorAll(".radio-input");
@@ -289,37 +906,107 @@
                 }
             }
         }
-        function validateForm() {
-            var radioInputs = document.querySelectorAll(".radio-input");
-
-            for (var i = 0; i < radioInputs.length; i++) {
-                if (radioInputs[i].checked) {
-                    // If "Clustering" is selected, ensure a sub-radio button is also selected
-                    if (radioInputs[i].value === 'cluster') {
-                        var clusteringOption = document.querySelector('input[name="clusteringOption"]:checked');
-                        if (!clusteringOption) {
-                            alert("Please select a clustering option before submitting.");
-                            return false; // Do not submit the form
-                        }
-                    if (radioInputs[i].value === 'ML') {
-                        var clusteringOption = document.querySelector('input[name="Train_ML"]:checked');
-                        if (!clusteringOption) {
-                            alert("Please select a Data type option before submitting.");
-                            return false; // Do not submit the form
-                        }
-                    }
-                    return true; // Submit the form
-                }
-            }
-        }
-    }
+        
         function showInputBox3() {
             var radioOption = document.querySelector('input[name="radioOption"]:checked');
-
-            // Show/hide sub-radio button group for Clustering
-            var clusteringOptions = document.getElementById('Train_ML');
-            clusteringOptions.style.display = (radioOption && radioOption.value === 'ML_train') ? 'block' : 'none';
+            
+            // Show/hide sub-radio button group for Training
+            var trainingOptions = document.getElementById('Train_ML');
+            trainingOptions.style.display = (radioOption && radioOption.value === 'ML_train') ? 'block' : 'none';
         }
+        
+        function validateForm() {
+            var radioInputs = document.querySelectorAll('input[name="radioOption"]');
+            var fileInput = document.getElementById("csv_file");
+            var formIsValid = false;
+            
+            // Check if a machine learning option is selected
+            for (var i = 0; i < radioInputs.length; i++) {
+                if (radioInputs[i].checked) {
+                    formIsValid = true;
+                    
+                    // If ML_train is selected, ensure a data type option is also selected
+                    if (radioInputs[i].value === 'ML_train') {
+                        var dataTypeOption = document.querySelector('input[name="Train_ML"]:checked');
+                        if (!dataTypeOption) {
+                            alert("Please select a Data type option before submitting.");
+                            return false;
+                        }
+                    }
+                    
+                    break;
+                }
+            }
+            
+            if (!formIsValid) {
+                alert("Please select a machine learning option before submitting.");
+                return false;
+            }
+            
+            // Check if a file is selected
+            if (!fileInput.files.length) {
+                alert("Please select a CSV file to upload.");
+                return false;
+            }
+            
+            // Check if the file is a CSV
+            var fileName = fileInput.value;
+            var fileExtension = fileName.split('.').pop().toLowerCase();
+            if (fileExtension !== 'csv') {
+                alert("Please select a CSV file only.");
+                return false;
+            }
+            
+            // Disable the submit button to prevent multiple submissions
+            document.getElementById("sub").disabled = true;
+            return true;
+        }
+        
+        // Validate bacteria selection in the second form
+        document.addEventListener('DOMContentLoaded', function() {
+            var checkboxForm = document.getElementById('checkboxForm');
+            if (checkboxForm) {
+                checkboxForm.addEventListener('submit', function(event) {
+                    var checkboxes = document.querySelectorAll('input[name="options"]');
+                    var selected = false;
+                    
+                    checkboxes.forEach(function(checkbox) {
+                        if (checkbox.checked) {
+                            selected = true;
+                        }
+                    });
+                    
+                    if (!selected && checkboxes.length > 0) {
+                        event.preventDefault();
+                        alert("Please select at least one bacteria type.");
+                        return false;
+                    }
+                });
+            }
+            
+            // Auto-hide flash messages after 5 seconds
+            const flashMessages = document.querySelectorAll('.flash-message');
+            if (flashMessages.length > 0) {
+                setTimeout(function() {
+                    flashMessages.forEach(function(message) {
+                        message.style.opacity = '0';
+                        message.style.transition = 'opacity 0.5s ease-out';
+                        setTimeout(function() {
+                            message.style.display = 'none';
+                        }, 500);
+                    });
+                }, 5000);
+            }
+        });
+        
+        // Initialize the scene when window loads
+        window.onload = function() {
+            init();
+            
+            // Show input boxes by default
+            showInputBox();
+            showInputBox3();
+        };
     </script>
 </body>
 </html>

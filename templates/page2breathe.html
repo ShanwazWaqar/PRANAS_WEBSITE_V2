@@ -3,248 +3,563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beautiful Page</title>
+    <title>PRANAS DATA ANALYSER - Bacteria Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --uga-red: #BA0C2F;
+            --uga-red-dark: #8B0C24;
+            --uga-black: #000000;
+            --uga-silver: #B7B7B7;
+            --uga-light-gray: #F8F8F8;
+            --uga-dark-gray: #333333;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            color: #45f3ff;
         }
+        
         body, html {
-            padding:0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            
-            min-height: 100vh;
-            flex-direction: column;
-            margin: 0;
-        }
-        header {
-            background-color: #333;
-            padding: 30px;
-            text-align: center;
-            position: absolute;
-            top: 0;
-            width: 100%;
-        }
-
-        .logo {
-            width: 100px; /* Adjust the width of the logo as needed */
-            height: auto;
-            vertical-align: middle;
-            margin-right: 10px; /* Adjust the margin between the logo and text as needed */
-        }
-        .head1{
-            display: flex;
-            justify-content: center;
-            /*justify-content: space-between;*/
-        }
-        .head2{
-            margin-right: 20px; /* Adjust the space between images as needed */
-        }
-        footer {
-            background-color: #333;
-            padding: 30px;
-            text-align: center;
-            position: absolute;
-            bottom:0;
-            width: 100%;
-            
-        }
-        video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: -1; /* Place the video behind other elements */
-            width: 100%;
             height: 100%;
-            object-fit: cover; 
+            background-color: var(--uga-light-gray);
+            color: var(--uga-dark-gray);
+            overflow-x: hidden;
         }
-        .welcome_box_container{
-            margin-top: 40px;
-            display: flex;
-            justify-content: center;
-            
-        }
-        .welcome-box{
-            display: inline-block;
-            align-items: center;
-            align-content: center;
-            border-radius: 10px;
-            background-color: #333333;
-            margin: 1px ;
-            padding: 20px;
 
+        /* Header Styles */
+        header {
+            background: var(--uga-red);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
         }
-        .content{
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
         }
-        .box1{
-            z-index: 2;
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .logo {
+            width: 45px;
+            height: 45px;
+            margin-right: 15px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        header h1 {
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-button {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-button i {
+            margin-right: 6px;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Styles */
+        main {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            padding-top: 75px; /* Space for fixed header */
+            padding-bottom: 45px; /* Space for footer */
+            background: var(--uga-light-gray);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e7eaf0 100%);
+            padding: 60px 0 40px;
+            position: relative;
+        }
+
+        .page-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--uga-red);
+            position: relative;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: var(--uga-dark-gray);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .breadcrumb {
+            color: var(--uga-dark-gray);
+            font-size: 0.9rem;
+            padding: 8px 15px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .breadcrumb a {
+            color: var(--uga-red);
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Content Container */
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            position: relative;
+        }
+        
+        /* Sidebar Panel */
+        .sidebar-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            height: fit-content;
+        }
+        
+        .panel-header {
+            background: var(--uga-red);
+            color: white;
             padding: 20px;
-            width: 30%;
-            background-color: #333333;
-            border-radius: 20px;
-            margin:20px;
-            height: 500px;
+            position: relative;
+        }
+        
+        .panel-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .panel-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .panel-body {
+            padding: 25px;
+        }
+        
+        /* Button Styles */
+        .menu-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            background-color: white;
+            color: var(--uga-dark-gray);
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid transparent;
+            position: relative;
+        }
+        
+        .menu-button:hover {
+            background-color: var(--uga-light-gray);
+            border-left-color: var(--uga-red);
+            transform: translateX(5px);
+        }
+        
+        .menu-button:active {
+            transform: translateX(2px);
+        }
+        
+        .menu-button[disabled] {
             opacity: 0.5;
-            
+            cursor: not-allowed;
+            box-shadow: none;
         }
-        .box2{
-            margin-left: auto;
-            z-index: 2;
-            padding: 20px;
-            width: 50%;
-            background-color: #333333;
-            border-radius: 20px;
-            margin:20px;
-            height: 400px;
-            opacity: 0.9;
+        
+        .menu-button[disabled]:hover {
+            background-color: white;
+            transform: none;
+            border-left-color: transparent;
         }
-        .box_1_heading_container{
-            text-align: center;
-        }
-        .box_1_heading{
+        
+        .menu-button-icon {
             display: inline-block;
+            margin-right: 10px;
+            color: var(--uga-red);
         }
-        .radio-group{
-            padding: 10px;
+        
+        .menu-button::after {
+            content: '›';
+            position: absolute;
+            right: 15px;
+            font-size: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        input{
-            padding:10px;
+        
+        .menu-button:hover::after {
+            opacity: 1;
+            transform: translateY(-50%) translateX(5px);
         }
-        .input-box{
-            display: none;
-        }
-        .form-items{
+        
+        /* Main Panel */
+        .main-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
             display: flex;
-            justify-content: center;
-            margin-top: 20px;
+            flex-direction: column;
+            height: 100%;
+            min-height: 500px;
+            position: relative;
         }
-        .output_placeholder_container{
-            height: 300px;
+        
+        .output-header {
+            background: var(--uga-black);
+            color: white;
+            padding: 20px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .output-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .output-body {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
-        .Op_buttons button[type="submit"] {
-            background-color: #04AA6D; 
-            border: none; 
-            color: white; 
-            padding: 16px 32px; 
-            text-decoration: none; 
-            margin: 10px 0; /* Margin between buttons */
-            cursor: pointer; 
-            border-radius: 5px; 
-            transition-duration: 0.4s; 
-            width: 250px; /* Fixed width */
-            height: 50px; /* Fixed height */
-            font-size: 17px;
-            
-  }
-  .Op_buttons button[type="submit"] span {
-    color: skyblue; /* Text color */
-  }
-  
         
+        .output-placeholder {
+            font-size: 1.2rem;
+            color: #888;
+            max-width: 600px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .placeholder-icon {
+            font-size: 5rem;
+            color: var(--uga-red);
+            opacity: 0.2;
+            margin-bottom: 20px;
+        }
+        
+        .returned-image {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            margin-top: 20px;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: var(--uga-black);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.85rem;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .main-panel {
+                min-height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 0;
+            }
+
+            .logo-container {
+                flex: 1;
+            }
+
+            .nav-links {
+                justify-content: flex-end;
+            }
+
+            .nav-button {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+
+            .nav-button i {
+                margin-right: 4px;
+            }
+            
+            .page-header {
+                padding: 40px 0 30px;
+            }
+            
+            .page-header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .breadcrumb {
+                align-self: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-container {
+                padding: 0 15px;
+            }
+
+            header h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo {
+                width: 35px;
+                height: 35px;
+                margin-right: 10px;
+            }
+            
+            .page-title {
+                font-size: 1.6rem;
+            }
+
+            .nav-button span {
+                display: none;
+            }
+
+            .nav-button i {
+                margin-right: 0;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <header>
-        <div class="head1">
-            <div class="head2">
-                <a href="{{ url_for('Home') }}">
-                    <img src="{{ url_for('static', filename='image1.jpeg') }}" alt="Logo" class="logo">
-                </a>
-            </div>
-            <div class="head2">
+    <header id="main-header">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='image1.jpeg') }}" alt="PRANAS Logo" class="logo">
                 <h1>PRANAS DATA ANALYSER</h1>
             </div>
-            
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-button">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.logout') }}" class="nav-button">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </header>
-    <video autoplay muted loop>
-        <source src="{{ url_for('static', filename='web1.mp4') }}" type="video/mp4">
-            Your browser does not support the video tag.
-    </video>
-    <div class="welcome_box_container">
-        <div class="welcome-box">
-            <h1 class="welcome-box-text"><center>Welcome to Bacteria Analyser</center></h1>
-        </div>
-    </div>
-    <div class="content">
-        <div class="box1">
-            <div class="box_1_heading_container">
-                <h2 class="box_1_heading">INPUT PROCESSOR</h2>
-            </div>
-            <div class="form-items">
-                <div class="wrapper">
-                    <div class="Op_buttons">   
-                        <form action="{{ url_for('redirect_to_DMwebpage') }}" method="get">
-                            <button type="submit"> Data Processor</button>
-                        </form>
-                    </div>
-                    
-                    <div class="Op_buttons">
-                        <form action="{{ url_for('redirect_to_clusterwebpage') }}" method="get">
-                            <button type="submit" disabled> Clustering</button>
-                        </form>
-                    </div>
-                    
-                    <div class="Op_buttons">
-                        <form action="{{ url_for('redirect_to_ML_webpage') }}" method="get">
-                            <button type="submit" disabled> Machine Learning</button>
-                        </form>
-                    </div>
-
-                    <div class="Op_buttons">
-                        <form action="{{ url_for('redirect_to_visual') }}" method="get">
-                            <button type="submit" disabled> Data Visualization</button>
-                        </form>
-                    </div>
-                    <div class="Op_buttons">
-                        <form action="{{ url_for('redirect_to_new_analysis') }}" method="get">
-                            <button type="submit"> Current Analysis v2</button>
-                        </form>
-                    </div>
-                        
-                </div>       
-            </div>
-        </div>
-
-        <div class=" box2" >
-            <h2><center>PROCESSOR OUTPUT</center></h2>
-            <div class="output1">
-                <div class="output_placeholder_container">
-                    <h1 class="output_placeholder"><center>{{sample_placeholder}}</center></h1>
-                    {%if img_base64%}
-                    <div class="returned_image">
-                        <img src="data:image/png;base64,{{ img_base64 }}" alt="PLOT" style="width: 500px; height: 300px;">
-                    </div>
-                    {%endif%}
-                    
+    
+    <main>
+        <section class="page-header">
+            <div class="page-header-content">
+                <div>
+                    <h2 class="page-title">Bacteria Analysis</h2>
+                    <p class="page-subtitle">Select an analysis tool to process and visualize your bacteria data</p>
+                </div>
+                <div class="breadcrumb">
+                    <a href="{{ url_for('home') }}">Home</a> / Bacteria Analysis
                 </div>
             </div>
-            <br><h3>{{ prediction_text }}</h3>  
+        </section>
+        
+        <div class="content-container">
+            <div class="content-grid">
+                <div class="sidebar-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Analysis Tools</h3>
+                        <p class="panel-subtitle">Select a tool to begin your analysis</p>
+                    </div>
+                    
+                    <div class="panel-body">
+                        <form action="{{ url_for('redirect_to_DMwebpage') }}" method="get">
+                            <button type="submit" class="menu-button">
+                                <span class="menu-button-icon">
+                                    <i class="fas fa-database"></i>
+                                </span>
+                                Data Processor
+                            </button>
+                        </form>
+                        
+                        <!-- Commented out buttons for future use -->
+                        <!--
+                        <form action="{{ url_for('redirect_to_clusterwebpage') }}" method="get">
+                            <button type="submit" class="menu-button" disabled>
+                                <span class="menu-button-icon">
+                                    <i class="fas fa-project-diagram"></i>
+                                </span>
+                                Clustering
+                            </button>
+                        </form>
+                        
+                        <form action="{{ url_for('redirect_to_ML_webpage') }}" method="get">
+                            <button type="submit" class="menu-button" disabled>
+                                <span class="menu-button-icon">
+                                    <i class="fas fa-brain"></i>
+                                </span>
+                                Machine Learning
+                            </button>
+                        </form>
+                        
+                        <form action="{{ url_for('redirect_to_visual') }}" method="get">
+                            <button type="submit" class="menu-button" disabled>
+                                <span class="menu-button-icon">
+                                    <i class="fas fa-chart-bar"></i>
+                                </span>
+                                Data Visualization
+                            </button>
+                        </form>
+                        -->
+                        
+                        <form action="{{ url_for('redirect_to_new_analysis') }}" method="get">
+                            <button type="submit" class="menu-button">
+                                <span class="menu-button-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </span>
+                                Current Analysis v2
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="main-panel">
+                    <div class="output-header">
+                        <h3 class="output-title">
+                            <i class="fas fa-chart-pie" style="margin-right: 10px;"></i>
+                            OUTPUT DISPLAY
+                        </h3>
+                    </div>
+                    
+                    <div class="output-body">
+                        {% if img_base64 %}
+                            <img src="data:image/png;base64,{{ img_base64 }}" alt="Analysis Result" class="returned-image">
+                        {% else %}
+                            <i class="fas fa-microscope placeholder-icon"></i>
+                            <p class="output-placeholder">{{ sample_placeholder|default('Select an analysis tool from the left panel to view results. Data processing output will appear here.') }}</p>
+                        {% endif %}
+                        
+                        {% if prediction_text %}
+                            <div class="prediction-result">
+                                <h4>{{ prediction_text }}</h4>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-
+    </main>
+    
     <footer>
-        <p>© DICE lab, College of Engineering, University of Georgia, Athens, GA, 30602.</p>
+        <p>© DICE Lab, College of Engineering, University of Georgia, Athens, GA, 30602</p>
     </footer>
-    <script>
-        
-        
-    </script>
 </body>
 </html>

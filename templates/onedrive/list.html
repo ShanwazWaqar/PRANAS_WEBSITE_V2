@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">OneDrive Files</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">OneDrive Files</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Folder: {{ folder_path }}</h5>
+        </div>
+        <div class="card-body">
+            {% if files %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Last Modified</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files %}
+                                <tr>
+                                    <td>
+                                        {% if 'folder' in file %}
+                                            <i class="fas fa-folder text-warning"></i>
+                                        {% else %}
+                                            <i class="fas fa-file text-primary"></i>
+                                        {% endif %}
+                                        {{ file.name }}
+                                    </td>
+                                    <td>
+                                        {% if 'folder' in file %}
+                                            Folder
+                                        {% elif 'file' in file %}
+                                            {{ file.file.mimeType }}
+                                        {% else %}
+                                            Unknown
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ file.lastModifiedDateTime|default('N/A') }}</td>
+                                    <td>
+                                        {% if 'folder' in file %}
+                                            <a href="{{ url_for('onedrive_files', folder=folder_path + '/' + file.name) }}" class="btn btn-sm btn-outline-primary">
+                                                Open Folder
+                                            </a>
+                                        {% elif 'file' in file %}
+                                            <a href="{{ url_for('onedrive_integration.download_file', file_id=file.id) }}" class="btn btn-sm btn-outline-success">
+                                                Download
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    No files found in this folder.
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="{{ url_for('onedrive_integration.disconnect_onedrive') }}" class="btn btn-warning float-right">Disconnect from OneDrive</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

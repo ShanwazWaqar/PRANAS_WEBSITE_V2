@@ -1,0 +1,80 @@
+Log started on 10/8/2024
+Connected to Server at 12:11:16
+12:16:4:Device Configured
+UID: SAKP_0.2_20_S3
+Mode: Static
+Trial: 1
+Duration: 60 seconds
+Sampling Rate: 1000
+Buffer Size: 1000
+User: Sanjay Sarma O V
+-----------------------------------
+Selected MCC 118 HAT device at address:0
+Device in continous scan mode
+Channels: 0, 1, 2,  
+Requested Scan Rate: 1000 
+Actual Scan Rate: 1000.0 
+12:16:5:Recording Started
+12:16:6:Time Elapsed (s):1 of 60
+12:16:7:Time Elapsed (s):2 of 60
+12:16:8:Time Elapsed (s):3 of 60
+12:16:9:Time Elapsed (s):4 of 60
+12:16:10:Time Elapsed (s):5 of 60
+12:16:11:Time Elapsed (s):6 of 60
+12:16:12:Time Elapsed (s):7 of 60
+12:16:13:Time Elapsed (s):8 of 60
+12:16:14:Time Elapsed (s):9 of 60
+12:16:15:Time Elapsed (s):10 of 60
+12:16:16:Time Elapsed (s):11 of 60
+12:16:17:Time Elapsed (s):12 of 60
+12:16:18:Time Elapsed (s):13 of 60
+12:16:19:Time Elapsed (s):14 of 60
+12:16:20:Time Elapsed (s):15 of 60
+12:16:21:Time Elapsed (s):16 of 60
+12:16:22:Time Elapsed (s):17 of 60
+12:16:23:Time Elapsed (s):18 of 60
+12:16:24:Time Elapsed (s):19 of 60
+12:16:25:Time Elapsed (s):20 of 60
+12:16:26:Time Elapsed (s):21 of 60
+12:16:27:Time Elapsed (s):22 of 60
+12:16:28:Time Elapsed (s):23 of 60
+12:16:29:Time Elapsed (s):24 of 60
+12:16:30:Time Elapsed (s):25 of 60
+12:16:31:Time Elapsed (s):26 of 60
+12:16:32:Time Elapsed (s):27 of 60
+12:16:33:Time Elapsed (s):28 of 60
+12:16:34:Time Elapsed (s):29 of 60
+12:16:35:Time Elapsed (s):30 of 60
+12:16:36:Time Elapsed (s):31 of 60
+12:16:37:Time Elapsed (s):32 of 60
+12:16:38:Time Elapsed (s):33 of 60
+12:16:39:Time Elapsed (s):34 of 60
+12:16:40:Time Elapsed (s):35 of 60
+12:16:41:Time Elapsed (s):36 of 60
+12:16:42:Time Elapsed (s):37 of 60
+12:16:43:Time Elapsed (s):38 of 60
+12:16:44:Time Elapsed (s):39 of 60
+12:16:45:Time Elapsed (s):40 of 60
+12:16:46:Time Elapsed (s):41 of 60
+12:16:47:Time Elapsed (s):42 of 60
+12:16:48:Time Elapsed (s):43 of 60
+12:16:49:Time Elapsed (s):44 of 60
+12:16:50:Time Elapsed (s):45 of 60
+12:16:51:Time Elapsed (s):46 of 60
+12:16:52:Time Elapsed (s):47 of 60
+12:16:53:Time Elapsed (s):48 of 60
+12:16:54:Time Elapsed (s):49 of 60
+12:16:55:Time Elapsed (s):50 of 60
+12:16:56:Time Elapsed (s):51 of 60
+12:16:57:Time Elapsed (s):52 of 60
+12:16:58:Time Elapsed (s):53 of 60
+12:16:59:Time Elapsed (s):54 of 60
+12:17:0:Time Elapsed (s):55 of 60
+12:17:1:Time Elapsed (s):56 of 60
+12:17:2:Time Elapsed (s):57 of 60
+12:17:3:Time Elapsed (s):58 of 60
+12:17:4:Time Elapsed (s):59 of 60
+12:17:5:Time Elapsed (s):60 of 60
+12:17:5:Recording Ended 
+Data Recording Complete for a Duration of 60s
+Final Data Frame Size:(60000, 4)

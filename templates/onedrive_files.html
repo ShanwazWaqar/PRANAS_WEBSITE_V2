@@ -1,0 +1,153 @@
+{% if files %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 50px"></th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Last Modified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set valid_files_exist = false %}
+                
+                {% for file in files %}
+                    {% if not file.folder and (file.name.endswith('.csv') or file.name.endswith('.xlsx') or file.name.endswith('.xls') or file.name.endswith('.txt')) %}
+                        {% set valid_files_exist = true %}
+                        <tr>
+                            <td>
+                                {% if '.csv' in file.name %}
+                                    <i class="fas fa-file-csv text-success"></i>
+                                {% elif '.xls' in file.name or '.xlsx' in file.name %}
+                                    <i class="fas fa-file-excel text-success"></i>
+                                {% elif '.txt' in file.name %}
+                                    <i class="fas fa-file-alt text-primary"></i>
+                                {% else %}
+                                    <i class="fas fa-file text-secondary"></i>
+                                {% endif %}
+                            </td>
+                            <td title="{{ file.name }}">
+                                <span class="text-truncate d-inline-block" style="max-width: 250px;">{{ file.name }}</span>
+                            </td>
+                            <td>{{ file.name.split('.')[-1]|upper }}</td>
+                            <td>
+                                {% if file.size %}
+                                    {% if file.size < 1024 %}
+                                        {{ file.size }} B
+                                    {% elif file.size < 1048576 %}
+                                        {{ (file.size / 1024)|round(1) }} KB
+                                    {% else %}
+                                        {{ (file.size / 1048576)|round(1) }} MB
+                                    {% endif %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if file.lastModifiedDateTime %}
+                                    {{ file.lastModifiedDateTime.split('T')[0] }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#fileModal{{ loop.index }}">
+                                    <i class="fas fa-file-import me-1"></i> Select for Analysis
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Modal for selecting processing type -->
+                        <div class="modal fade" id="fileModal{{ loop.index }}" tabindex="-1" aria-labelledby="fileModalLabel{{ loop.index }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="fileModalLabel{{ loop.index }}">Select Analysis Type</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ url_for('select_onedrive_file', file_id=file.id) }}" method="post">
+                                        <div class="modal-body">
+                                            <p>Select analysis type for: <strong>{{ file.name }}</strong></p>
+                                            
+                                            <div class="list-group">
+                                                <label class="list-group-item list-group-item-action">
+                                                    <input class="form-check-input me-2" type="radio" name="processing_type" value="raw_visual" checked>
+                                                    <div>
+                                                        <strong>Raw Data Visualization</strong>
+                                                        <p class="mb-0 text-muted small">Visualize raw data patterns and trends</p>
+                                                    </div>
+                                                </label>
+                                                <label class="list-group-item list-group-item-action">
+                                                    <input class="form-check-input me-2" type="radio" name="processing_type" value="pca">
+                                                    <div>
+                                                        <strong>PCA Analysis</strong>
+                                                        <p class="mb-0 text-muted small">Principal Component Analysis for dimension reduction</p>
+                                                    </div>
+                                                </label>
+                                                <label class="list-group-item list-group-item-action">
+                                                    <input class="form-check-input me-2" type="radio" name="processing_type" value="clustering_KMS">
+                                                    <div>
+                                                        <strong>K-Means Clustering</strong>
+                                                        <p class="mb-0 text-muted small">Group data into clusters based on similarity</p>
+                                                    </div>
+                                                </label>
+                                                <label class="list-group-item list-group-item-action">
+                                                    <input class="form-check-input me-2" type="radio" name="processing_type" value="ml">
+                                                    <div>
+                                                        <strong>Machine Learning Analysis</strong>
+                                                        <p class="mb-0 text-muted small">Apply machine learning algorithms to your data</p>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-file-import me-1"></i> Import File
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if not valid_files_exist %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4">
+                            <i class="fas fa-exclamation-circle text-warning fa-2x mb-3"></i>
+                            <h5>No compatible files found</h5>
+                            <p class="text-muted">Upload CSV, Excel or text files to your OneDrive folder</p>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <!-- No files or error state -->
+    <div class="text-center py-5 bg-light rounded">
+        <i class="far fa-folder-open fa-4x text-muted mb-3"></i>
+        <h4>No files found in your folder</h4>
+        <p class="text-muted">
+            Your personal folder "{{ folder_info.name }}" in OneDrive is empty or couldn't be accessed.
+        </p>
+        
+        <div class="mt-4">
+            <h5>How to add files:</h5>
+            <ol class="text-start mx-auto" style="max-width: 500px;">
+                <li>Go to <a href="https://onedrive.live.com" target="_blank">OneDrive.com</a></li>
+                <li>Sign in with the account connected to this application</li>
+                <li>Navigate to or create a folder named "{{ folder_info.name }}"</li>
+                <li>Upload your CSV, Excel or text files to this folder</li>
+                <li>Return here and click "Refresh Files" to see your files</li>
+            </ol>
+        </div>
+    </div>
+{% endif %}

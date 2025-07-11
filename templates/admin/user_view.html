@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}User Details - Admin - PRANAS Platform{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">User Details: {{ user.username }}</h1>
+    <a href="{{ url_for('admin_dashboard') }}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+        Back to Admin Dashboard
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- User Information -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-4 border-b bg-indigo-50">
+            <h2 class="text-xl font-semibold text-indigo-800">User Information</h2>
+        </div>
+        <div class="p-4">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Role:</strong> 
+                {% if user.role == 'admin' %}
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                    Admin
+                </span>
+                {% else %}
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    User
+                </span>
+                {% endif %}
+            </p>
+            <p><strong>Account Created:</strong> {{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <p><strong>Files Uploaded:</strong> {{ files|length }}</p>
+        </div>
+    </div>
+
+    <!-- User Actions -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-4 border-b bg-indigo-50">
+            <h2 class="text-xl font-semibold text-indigo-800">User Management</h2>
+        </div>
+        <div class="p-4">
+            {% if user.id != current_user.id %}
+                <div class="space-y-4">
+                    <a href="{{ url_for('admin_change_user_role', user_id=user.id) }}" 
+                       class="block w-full text-center py-2 px-4 rounded {% if user.role == 'admin' %}bg-yellow-600 hover:bg-yellow-700{% else %}bg-indigo-600 hover:bg-indigo-700{% endif %} text-white">
+                        {% if user.role == 'admin' %}Demote to User{% else %}Promote to Admin{% endif %}
+                    </a>
+                    
+                    <a href="{{ url_for('admin_delete_user', user_id=user.id) }}" 
+                       class="block w-full text-center py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700"
+                       onclick="return confirm('Are you sure you want to delete this user and all their files? This action cannot be undone.')">
+                        Delete User
+                    </a>
+                </div>
+            {% else %}
+                <div class="text-center p-4 text-gray-500">
+                    You cannot manage your own account from here.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- User Statistics -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-4 border-b bg-indigo-50">
+            <h2 class="text-xl font-semibold text-indigo-800">User Statistics</h2>
+        </div>
+        <div class="p-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-3 bg-blue-50 rounded-lg">
+                    <p class="text-sm text-blue-500 font-medium">Total Files</p>
+                    <p class="text-2xl font-bold text-blue-700">{{ files|length }}</p>
+                </div>
+                <div class="p-3 bg-green-50 rounded-lg">
+                    <p class="text-sm text-green-500 font-medium">Processed Files</p>
+                    <p class="text-2xl font-bold text-green-700">{{ files|selectattr('processed', 'eq', true)|list|length }}</p>
+                </div>
+                <div class="p-3 bg-purple-50 rounded-lg">
+                    <p class="text-sm text-purple-500 font-medium">ML Analysis</p>
+                    <p class="text-2xl font-bold text-purple-700">{{ files|selectattr('processing_type', 'in', ['ml_method', 'ML_training'])|list|length }}</p>
+                </div>
+                <div class="p-3 bg-yellow-50 rounded-lg">
+                    <p class="text-sm text-yellow-500 font-medium">Breathe Analysis</p>
+                    <p class="text-2xl font-bold text-yellow-700">{{ files|selectattr('processing_type', 'in', ['fvc', 'svc', 'mvv', 'sm'])|list|length }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-6 bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="p-4 border-b bg-indigo-50">
+        <h2 class="text-xl font-semibold text-indigo-800">User Files</h2>
+    </div>
+    <div class="p-4">
+        {% if files %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Filename</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uploaded</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for file in files %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ file.original_filename }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ file.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if file.processed %}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Processed
+                            </span>
+                            {% else %}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Pending
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if file.processing_type %}
+                                {{ file.processing_type }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="{{ url_for('view_file', file_id=file.id) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">View</a>
+                            <a href="{{ url_for('delete_file', file_id=file.id) }}" 
+                               class="text-red-600 hover:text-red-900"
+                               onclick="return confirm('Are you sure you want to delete this file? This action cannot be undone.')">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center p-4">
+            <p class="text-gray-500">This user has not uploaded any files yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

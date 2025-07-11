@@ -15,70 +15,165 @@ from scipy.integrate import cumulative_trapezoid
 
 
 def fvc_calc(data):
-    i=3
-    imvmin,mvmin,imvmax,mvmax,mvAvgPow,mvAvgX,mvAvgY,master_data = utli_fun(data)
-    imin = imvmin[i]
-    imin2 = imvmin[i+1]
+    # Get utility data
+    imvmin, mvmin, imvmax, mvmax, mvAvgPow, mvAvgX, mvAvgY, master_data = utli_fun(data)
+    
+    # Check if we have enough minimum points in the data
+    # We need at least 5 points if we're using index 3 and 4 (i and i+1)
+    if len(imvmin) < 5:
+        # If not enough points, use the first two peaks if available
+        if len(imvmin) >= 2:
+            i = 0  # Use the first point
+        else:
+            # Create an error plot if we don't have enough data
+            plt.figure()
+            plt.text(0.5, 0.5, f"Error: Not enough breath cycles detected in data.\nFound {len(imvmin)} valleys, need at least 5.", 
+                    horizontalalignment='center', verticalalignment='center',
+                    transform=plt.gca().transAxes, fontsize=14, color='red')
+            plt.xlabel('Time (s)')
+            plt.ylabel('Pow')
+            plt.grid(True)
+            
+            img_bytes_io_1 = io.BytesIO()
+            plt.savefig(img_bytes_io_1)
+            img_bytes_io_1.seek(0)
+            img_base64_1 = base64.b64encode(img_bytes_io_1.read()).decode('utf-8')
+            plt.close()
+            
+            # Return the error plot for both images
+            return img_base64_1, img_base64_1
+    else:
+        i = 3  # Use the original index if we have enough data
+    
+    # First plot - show the breath pattern with marked points
     plt.figure()
     plt.plot(np.arange(len(mvAvgPow)) / 1000, mvAvgPow, '-k', imvmax / 1000, mvmax, 'or')
     plt.plot(np.arange(len(mvAvgPow)) / 1000, mvAvgPow, '-k', imvmin / 1000, mvmin, 'ob')
+    
+    # Safe indexing
+    imin = imvmin[i]
+    imin2 = imvmin[i+1]
+    
+    # Plot markers for exhalation start and end
     plt.plot(imvmin[i]/1000, mvmin[imin], '|', markersize=50, linewidth=50)
     plt.text(imvmin[i]/1000, mvmin[imin], 'Exhalation Start', fontsize=10, color='red', va='bottom', ha='right')
     plt.plot(imvmin[i+1]/1000, mvmin[imin2], '|', markersize=50, linewidth=50)
-    plt.text(imvmin[i+1]/1000, mvmin[imin2], 'Inhaltion End', fontsize=10, color='red', va='bottom', ha='right')
+    plt.text(imvmin[i+1]/1000, mvmin[imin2], 'Inhalation End', fontsize=10, color='red', va='bottom', ha='right')
 
     plt.xlabel('Time (s)')
     plt.ylabel('Pow')
     plt.grid(True)
     plt.minorticks_on()
+    
+    # Save the first plot
     img_bytes_io_1 = io.BytesIO()
-    # Plot your first plot
     plt.savefig(img_bytes_io_1)
     img_bytes_io_1.seek(0)
     img_base64_1 = base64.b64encode(img_bytes_io_1.read()).decode('utf-8')
     plt.close()
     
-    plt.figure()
-    time = imvmin[i+1] - imvmin[i]
-    tsVar = master_data["Samples"].iloc[0:time] / 1000
-    flow = mvAvgPow[imvmin[i]:imvmin[i+1]]
-    
-    # Calculate flow rate
-    flow_rate = np.diff(flow) / np.diff(tsVar)
-    flow_df = pd.DataFrame({
-    'flow_rate': flow_rate
+    # Second plot - flow volume curve
+    try:
+        plt.figure()
+        time = imvmin[i+1] - imvmin[i]
+        
+        # Make sure we don't try to access values beyond array size
+        if time <= 0 or imvmin[i] + time > len(mvAvgPow):
+            raise ValueError("Invalid time range for FVC calculation")
+            
+        # Get time samples for the breath cycle
+        tsVar = master_data["Samples"].iloc[0:time] / 1000
+        
+        # Get flow for the breath cycle
+        if imvmin[i] >= len(mvAvgPow) or imvmin[i+1] > len(mvAvgPow):
+            raise ValueError("Index out of bounds in breath cycle data")
+            
+        flow = mvAvgPow[imvmin[i]:imvmin[i+1]]
+        
+        # Ensure we have enough samples in tsVar and flow
+        if len(tsVar) < 2 or len(flow) < 2:
+            raise ValueError("Not enough samples for flow calculation")
+            
+        # Ensure tsVar and flow have the same length
+        min_length = min(len(tsVar), len(flow))
+        tsVar = tsVar[:min_length]
+        flow = flow[:min_length]
+        
+        # Calculate flow rate
+        flow_rate = np.diff(flow) / np.diff(tsVar)
+        flow_df = pd.DataFrame({
+            'flow_rate': flow_rate
         })
-    # Calculate flow volume
-    flow_volume = cumulative_trapezoid(flow_rate) * np.diff(tsVar[:-1])
-    fvc = max(flow_volume)
+        
+        # Check for sufficient data for trapezoid integration
+        if len(flow_rate) < 2 or len(tsVar) < 3:
+            raise ValueError("Not enough data points for volume calculation")
+            
+        # Calculate flow volume using trapezoidal integration
+        flow_volume = cumulative_trapezoid(flow_rate) * np.diff(tsVar[:-1])
+        
+        # Check if we got a valid flow volume
+        if len(flow_volume) == 0:
+            raise ValueError("Empty flow volume array")
+            
+        fvc = max(flow_volume)
 
-    # Smoothing flow rate using moving average
-    flow_rate_smoothed = flow_df['flow_rate'].rolling(window=750,min_periods=1).mean()
-    flow_rate_smoothed = flow_rate_smoothed.values
-    # Plotting
-    plt.plot(flow_volume[:], flow_rate_smoothed[:-1])
-    plt.xlabel('Flow volume (Normalized)')
-    plt.ylabel('Power')
-    plt.title('FVC = {} L'.format(fvc))
+        # Smoothing flow rate using moving average
+        # Use a smaller window if we don't have enough points
+        window_size = min(750, len(flow_rate) // 2)
+        if window_size < 1:
+            window_size = 1
+            
+        flow_rate_smoothed = flow_df['flow_rate'].rolling(window=window_size, min_periods=1).mean()
+        flow_rate_smoothed = flow_rate_smoothed.values
+        
+        # Ensure smoothed flow rate and flow volume have compatible lengths
+        min_len = min(len(flow_volume), len(flow_rate_smoothed) - 1)
+        
+        # Plotting
+        plt.plot(flow_volume[:min_len], flow_rate_smoothed[:min_len])
+        plt.xlabel('Flow volume (Normalized)')
+        plt.ylabel('Power')
+        plt.title('FVC = {:.2f} L'.format(fvc))
 
-    # Set limits
-    x_limit = max(np.abs(flow_volume)) * np.array([-1.1, 1.1])
-    y_limit = max(np.abs(flow_rate_smoothed)) * np.array([-1.1, 1.1])
-    plt.xlim(x_limit)
-    plt.ylim(y_limit)
+        # Set limits
+        if len(flow_volume) > 0:
+            x_limit = max(np.abs(flow_volume)) * np.array([-1.1, 1.1])
+            plt.xlim(x_limit)
+            
+        if len(flow_rate_smoothed) > 0:
+            y_limit = max(np.abs(flow_rate_smoothed)) * np.array([-1.1, 1.1])
+            plt.ylim(y_limit)
 
-    # Add zero lines
-    plt.axhline(0, color='k', linestyle='--')
-    plt.axvline(0, color='k', linestyle='--')
+        # Add zero lines
+        plt.axhline(0, color='k', linestyle='--')
+        plt.axvline(0, color='k', linestyle='--')
 
-    img_bytes_io_2 = io.BytesIO()
-    # Plot your second plot
-    plt.savefig(img_bytes_io_2)
-    img_bytes_io_2.seek(0)
-    img_base64_2 = base64.b64encode(img_bytes_io_2.read()).decode('utf-8')
-    plt.close()
+        # Save the second plot
+        img_bytes_io_2 = io.BytesIO()
+        plt.savefig(img_bytes_io_2)
+        img_bytes_io_2.seek(0)
+        img_base64_2 = base64.b64encode(img_bytes_io_2.read()).decode('utf-8')
+        plt.close()
+        
+    except Exception as e:
+        # If there's an error in the flow volume calculation, create an error plot
+        plt.figure()
+        plt.text(0.5, 0.5, f"Error in FVC calculation: {str(e)}", 
+                horizontalalignment='center', verticalalignment='center',
+                transform=plt.gca().transAxes, fontsize=14, color='red')
+        plt.xlabel('Flow Volume')
+        plt.ylabel('Power')
+        plt.grid(True)
+        
+        # Save the error plot
+        img_bytes_io_2 = io.BytesIO()
+        plt.savefig(img_bytes_io_2)
+        img_bytes_io_2.seek(0)
+        img_base64_2 = base64.b64encode(img_bytes_io_2.read()).decode('utf-8')
+        plt.close()
 
-    return img_base64_1,img_base64_2
+    return img_base64_1, img_base64_2
 
 def svc_calc(data):
     imvmin,mvmin,imvmax,mvmax,mvAvgPow,mvAvgX,mvAvgY,master_data = utli_fun(data)

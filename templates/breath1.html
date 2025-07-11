@@ -3,179 +3,747 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beautiful Page</title>
+    <title>PRANAS DATA ANALYSER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --uga-red: #BA0C2F;
+            --uga-red-dark: #8B0C24;
+            --uga-black: #000000;
+            --uga-silver: #B7B7B7;
+            --uga-light-gray: #F8F8F8;
+            --uga-dark-gray: #333333;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
+        
         body, html {
-            padding:0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            
-            min-height: 100vh;
-            flex-direction: column;
-            margin: 0;
+            height: 100%;
+            background-color: var(--uga-light-gray);
+            color: var(--uga-dark-gray);
+            overflow-x: hidden;
         }
 
+        /* Header Styles */
         header {
-            background-color: #333;
-            padding: 30px;
-            text-align: center;
+            background: linear-gradient(135deg, var(--uga-red) 0%, #8B0C24 100%);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            padding: 10px 0;
+            background: var(--uga-red);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .logo {
+            width: 45px;
+            height: 45px;
+            margin-right: 15px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+        
+        header h1 {
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            transition: var(--transition);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-button {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .auth-button i {
+            margin-right: 6px;
+        }
+
+        .auth-button.signup {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .auth-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .auth-button.signup:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Main Content Styles */
+        main {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            padding-top: 75px; /* Space for fixed header */
+            padding-bottom: 45px; /* Space for footer */
+            background: white;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            min-height: 600px;
+            width: 100%;
+            display: flex;
+            position: relative;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e7eaf0 100%);
+            padding: 60px 0;
+        }
+        
+        /* Background Lungs Pattern */
+        .background-pattern {
             position: absolute;
             top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpath d='M100 40 C60 60 40 120 60 160 C80 180 100 160 100 160' fill='none' stroke='%23BA0C2F' stroke-width='2' opacity='0.05'/%3E%3Cpath d='M100 40 C140 60 160 120 140 160 C120 180 100 160 100 160' fill='none' stroke='%23BA0C2F' stroke-width='2' opacity='0.05'/%3E%3C/svg%3E");
+            opacity: 0.2;
+            z-index: 1;
+            pointer-events: none;
         }
-
-        .logo {
-            width: 100px; /* Adjust the width of the logo as needed */
-            height: auto;
-            vertical-align: middle;
-            margin-right: 10px; /* Adjust the margin between the logo and text as needed */
-        }
-        .head1{
-            display: flex;
-            justify-content: center;
-            /*justify-content: space-between;*/
-        }
-        .head2{
-            margin-right: 20px; /* Adjust the space between images as needed */
-        }
-        footer {
-            background-color: #333;
-            padding: 30px;
-            text-align: center;
-            position: absolute;
-            bottom:0;
+        
+        /* Content Container */
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
             width: 100%;
-            
-        }
-        main {
-            flex-grow: 5;
+            padding: 0 20px;
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        .button-container {
+            gap: 30px;
             position: relative;
-            width: 440px;
-            height: 600px;
-            background: #142325;
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 20px;
-            background-color: rgba(78, 70, 70, 0.7);
-            
-            background-size: 75% 75%;
-            background-position: center;
-            background-repeat: no-repeat;
+            z-index: 2;
+        }
+        
+        .hero-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .hero-title {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            color: var(--uga-red);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            color: var(--uga-dark-gray);
+            margin-bottom: 30px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: var(--uga-red);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        
+        .hero-actions {
+            flex: 1;
+            min-width: 300px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
         }
         
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
         
-
-        form {
-            text-align: center;
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background-color: var(--uga-red);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--uga-red);
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--uga-red);
         }
 
-        button {
+        .card-subtitle {
+            font-size: 0.95rem;
+            color: var(--uga-dark-gray);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 0;
+            margin: 15px 0;
             border: none;
-            outline: none;
-            padding: 15px 5px;
-            background: #45f3ff;
+            border-radius: 8px;
+            background-color: var(--uga-red);
+            color: white;
+            font-weight: 500;
+            font-size: 1rem;
             cursor: pointer;
-            border-radius: 4px;
-            font-weight: 600;
-            width: 250px;
-            height: 50px;
-            margin-top: 100px;
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
         }
-        .button-container form:first-child .button {
-            margin-top: -40px; /* Move only the top button higher */
+        
+        .action-button:hover {
+            background-color: #8B0C24;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(186, 12, 47, 0.3);
+        }
+        
+        .action-button:active {
+            transform: translateY(-1px);
         }
 
-        button:hover {
-            background-color:rgb(150, 135, 117);
-        }
-        video {
+        .action-button::after {
+            content: '';
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: -1; /* Place the video behind other elements */
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
         }
-        h1{
-            align-items: center;
-            -webkit-text-fill-color: #45f3ff;
-            -webkit-text-stroke-color: aquamarine;
 
+        .action-button:hover::after {
+            animation: ripple 1s ease-out;
         }
-        p{
-            align-items: center;
-            -webkit-text-fill-color: #45f3ff;
-            -webkit-text-stroke-color: aquamarine;
 
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
         }
-        video {
+
+        .button-icon {
+            margin-right: 8px;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 20px;
+            background-color: white;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--uga-black);
+            font-size: 2rem;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            width: 80px;
+            height: 4px;
+            background-color: var(--uga-red);
+            transform: translateX(-50%);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(186, 12, 47, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--uga-red);
+            font-size: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            color: var(--uga-black);
+            margin-bottom: 15px;
+        }
+
+        .feature-description {
+            font-size: 0.95rem;
+            color: var(--uga-dark-gray);
+            line-height: 1.6;
+        }
+
+        /* Flash Message Styles */
+        #flash-container {
+            position: fixed;
+            top: 85px;
+            right: 20px;
+            z-index: 1010;
+            max-width: 350px;
+        }
+
+        .flash {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            background-color: #f8d7da;
+            color: #721c24;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .flash.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #c3e6cb;
+        }
+
+        .flash.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #bee5eb;
+        }
+
+        .flash.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffeeba;
+        }
+
+        .flash-close {
+            float: right;
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .flash-close:hover {
+            color: var(--uga-red);
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: var(--uga-black);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.85rem;
+            position: fixed;
+            bottom: 0;
             width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensure video covers the entire container */
+        }
+
+        footer p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+            }
+            
+            .hero-actions {
+                width: 100%;
+            }
+            
+            .action-card {
+                width: 100%;
+                max-width: 500px;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 0;
+            }
+
+            .logo-container {
+                flex: 1;
+            }
+
+            .auth-links {
+                justify-content: flex-end;
+            }
+
+            .auth-button {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+
+            .auth-button i {
+                margin-right: 4px;
+            }
+
+            .hero-section {
+                padding: 40px 0;
+            }
+
+            .section-title {
+                font-size: 1.7rem;
+                margin-bottom: 40px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-container {
+                padding: 0 15px;
+            }
+
+            header h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo {
+                width: 35px;
+                height: 35px;
+                margin-right: 10px;
+            }
+            
+            .hero-text {
+                padding: 0;
+            }
+            
+            .action-card {
+                padding: 20px;
+            }
+
+            .card-title {
+                font-size: 1.3rem;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+
+            .auth-button span {
+                display: none;
+            }
+
+            .auth-button i {
+                margin-right: 0;
+            }
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <div class="head1">
-            <div class="head2">
-                <a href="{{ url_for('Home') }}">
-                    <img src="{{ url_for('static', filename='image1.jpeg') }}" alt="Logo" class="logo">
-                </a>
-            </div>
-            <div class="head2">
+    <!-- Background Lungs Pattern -->
+    <div class="background-pattern"></div>
+    
+    <header id="main-header">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='image1.jpeg') }}" alt="PRANAS Logo" class="logo">
                 <h1>PRANAS DATA ANALYSER</h1>
             </div>
-            
+            <div class="auth-links">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('index') }}" class="auth-button">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="{{ url_for('auth.logout') }}" class="auth-button">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="auth-button login">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login</span>
+                    </a>
+                    <a href="{{ url_for('auth.signup') }}" class="auth-button signup">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Sign Up</span>
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </header>
-<video autoplay muted loop>
-    <source src="{{ url_for('static', filename='web1.mp4') }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-       
+    
+    <!-- Flash Message Container -->
+    <div id="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">
+                        {{ message }}
+                        <span class="flash-close">&times;</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
     <main>
-        
-        <div class="button-container">
-            <form action="{{ url_for('redirect_to_page2') }}" method="get">
-                <button type="submit">Bacteria Data</button>
-            </form>
-            
-            <form action="{{ url_for('redirect_to_breathepage') }}" method="get">
-                <button type="submit">Breathe data</button>
-            </form>
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <span class="badge">UGA DICE Lab</span>
+                    <h2 class="hero-title">Advanced Data Analysis for Scientific Discovery</h2>
+                    <p class="hero-subtitle">PRANAS provides powerful tools for analyzing bacteria and breathing patterns, utilizing machine learning and visualization techniques to extract meaningful insights from complex data.</p>
+                </div>
+                
+                <div class="hero-actions">
+                    <div class="action-card">
+                        <h3 class="card-title">Select Analysis Type</h3>
+                        <p class="card-subtitle">Choose the type of data you'd like to analyze using our advanced tools.</p>
+                        
+                        <form action="/login" method="get">
+                            <input type="hidden" name="next" value="/page2breathe">
+                            <button type="submit" class="action-button">
+                                <i class="fas fa-microscope button-icon"></i> Bacteria Data
+                            </button>
+                        </form>
+                        
+                        <form action="/login" method="get">
+                            <input type="hidden" name="next" value="/redirect_to_breathepage">
+                            <button type="submit" class="action-button">
+                                <i class="fas fa-lungs button-icon"></i> Breathe Data
+                            </button>
+                        </form>
+                        
+                        <form action="/login" method="get">
+                            <input type="hidden" name="next" value="/redirect_to_doghome">
+                            <button type="submit" class="action-button">
+                                <i class="fas fa-dog button-icon"></i> Dog Breathe
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            <form action="{{ url_for('redirect_to_doghome') }}" method="get">
-                <button type="submit">Dog Breathe</button>
-            </form>
-        </div>
+        <section class="features-section">
+            <div class="features-container">
+                <h2 class="section-title">Key Features</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3 class="feature-title">Advanced Data Visualization</h3>
+                        <p class="feature-description">Transform complex datasets into intuitive visual representations for easier interpretation and analysis.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="feature-title">Machine Learning Integration</h3>
+                        <p class="feature-description">Leverage sophisticated algorithms to identify patterns and make predictions from your scientific data.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="feature-title">Real-time Processing</h3>
+                        <p class="feature-description">Analyze and visualize your data streams as they come in, enabling immediate insights and decision-making.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
-
+    
     <footer>
-        <p>© DICE lab, College of Engineering, University of Georgia, Athens, GA, 30602.</p>
+        <p>© DICE Lab, College of Engineering, University of Georgia, Athens, GA, 30602</p>
     </footer>
-
+    
+    <script>
+        // Initialize flash messages
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show any server-side flash messages
+            const flashes = document.querySelectorAll('.flash');
+            flashes.forEach(function(flash) {
+                // Trigger transition
+                setTimeout(function() {
+                    flash.classList.add('show');
+                }, 10);
+                
+                // Set up close button
+                const closeBtn = flash.querySelector('.flash-close');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function() {
+                        flash.classList.remove('show');
+                        setTimeout(function() {
+                            if (flash.parentNode) {
+                                flash.parentNode.removeChild(flash);
+                            }
+                        }, 300);
+                    });
+                }
+                
+                // Auto-remove after 5 seconds
+                setTimeout(function() {
+                    if (flash.parentNode) {
+                        flash.classList.remove('show');
+                        setTimeout(function() {
+                            if (flash.parentNode) {
+                                flash.parentNode.removeChild(flash);
+                            }
+                        }, 300);
+                    }
+                }, 5000);
+            });
+        });
+        
+        // Header scroll effect
+        const header = document.getElementById('main-header');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
